@@ -30,37 +30,55 @@ const HomePage = () => {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gradient-to-r from-indigo-700 to-purple-900 relative overflow-hidden">
-      {/* Glowing Background Effects */}
+   <div className="relative flex items-center justify-center h-screen bg-[#1F1D2B] overflow-hidden">
+
+      {/* Grid Pattern Background */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle,_rgba(255,255,255,0.04)_1px,_transparent_1px)] [background-size:20px_20px] z-0" />
+
+      {/* Animated Ingredient Icons */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 0.3, scale: 1 }}
-        transition={{ duration: 2 }}
-        className="absolute w-[500px] h-[500px] bg-white opacity-20 blur-3xl rounded-full top-10 left-20"
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 0.3 }}
+        transition={{ duration: 4, repeat: Infinity, repeatType: "reverse" }}
+        className="absolute top-10 left-10 w-24 h-24 bg-[url('/pizza.svg')] bg-no-repeat bg-contain"
       />
       <motion.div
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 0.3, scale: 1 }}
-        transition={{ duration: 2, delay: 0.5 }}
-        className="absolute w-[400px] h-[400px] bg-white opacity-10 blur-3xl rounded-full bottom-20 right-20"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 0.2 }}
+        transition={{ duration: 6, repeat: Infinity, repeatType: "reverse" }}
+        className="absolute bottom-20 right-16 w-20 h-20 bg-[url('/chili.svg')] bg-no-repeat bg-contain"
+      />
+      <motion.div
+        initial={{ x: -30, opacity: 0 }}
+        animate={{ x: 0, opacity: 0.15 }}
+        transition={{ duration: 5, repeat: Infinity, repeatType: "reverse" }}
+        className="absolute top-1/2 left-1/4 w-16 h-16 bg-[url('/garlic.svg')] bg-no-repeat bg-contain"
       />
 
-      {/* POS Title with Stylish Effects */}
+      {/* Overlay Warm Light Gradient */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-yellow-500/10 via-rose-400/10 to-purple-500/10 z-0 pointer-events-none" />
+
+      {/* Title Section */}
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
-        className="absolute top-12 text-center"
+        className="absolute top-12 text-center z-10"
       >
         <h1 className="text-7xl font-extrabold drop-shadow-lg font-[Rajdhani] text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-red-500 animate-pulse">
-        Heaven’s Kitchen
+          Heaven’s Kitchen
         </h1>
         <p className="text-lg text-gray-200 mt-2 tracking-wide font-[Rajdhani] relative inline-block">
-        A Taste So Divine, You’ll Keep Coming Back!
+          A Taste So Divine, You’ll Keep Coming Back!
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: "100%" }}
-            transition={{ duration: 1, ease: "easeOut", repeat: Infinity, repeatType: "reverse" }}
+            transition={{
+              duration: 1,
+              ease: "easeOut",
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
             className="absolute left-0 bottom-0 h-[2px] bg-yellow-400"
           />
         </p>
@@ -75,21 +93,20 @@ const HomePage = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => setShowForm(true)}
-          className="px-8 py-4 bg-white text-blue-600 font-bold text-lg rounded-lg shadow-lg hover:bg-blue-500 hover:text-white transition-all duration-300 font-[Rajdhani]"
+          className="z-10 px-8 py-4 bg-white text-blue-600 font-bold text-lg rounded-lg shadow-lg hover:bg-blue-500 hover:text-white transition-all duration-300 font-[Rajdhani]"
         >
           Login
         </motion.button>
       )}
 
-      {/* Glassmorphic Login Form with Stylish Font */}
+      {/* Login Form (Untouched as requested) */}
       {showForm && (
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
-          className="absolute bg-white/10 backdrop-blur-lg p-8 rounded-xl shadow-2xl w-80 border border-white/20"
+          className="absolute bg-white/10 backdrop-blur-lg p-8 rounded-xl shadow-2xl w-80 border border-white/20 z-20"
         >
-          {/* Close Button */}
           <button
             onClick={() => setShowForm(false)}
             className="absolute top-3 right-3 p-1 rounded-full hover:bg-gray-300/30 transition-all"
@@ -100,26 +117,30 @@ const HomePage = () => {
           <h2 className="text-2xl font-bold text-white mb-4 text-center font-[Rajdhani]">
             Login
           </h2>
-{/* Error Message */}
-{error && <p className="text-red-500 text-sm text-center mb-2">{error}</p>}
-          {/* Form Fields */}
+
+          {error && (
+            <p className="text-red-500 text-sm text-center mb-2">{error}</p>
+          )}
+
           <input
             type="text"
             placeholder="Username"
             value={username}
-            onChange={(e)=>setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
             className="w-full px-4 py-2 mb-3 bg-white/20 text-white placeholder-gray-300 border border-white/30 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 font-[Rajdhani]"
           />
           <input
             type="password"
             placeholder="Password"
             value={password}
-            onChange={(e)=>setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full px-4 py-2 mb-4 bg-white/20 text-white placeholder-gray-300 border border-white/30 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 font-[Rajdhani]"
           />
 
-          {/* Submit Button */}
-          <button className="w-full bg-blue-500 text-white py-2 rounded-md font-bold hover:bg-blue-600 transition-all font-[Rajdhani]" onClick={handleLogin}>
+          <button
+            className="w-full bg-blue-500 text-white py-2 rounded-md font-bold hover:bg-blue-600 transition-all font-[Rajdhani]"
+            onClick={handleLogin}
+          >
             Login
           </button>
         </motion.div>

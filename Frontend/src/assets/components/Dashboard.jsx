@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Home, Search, Bell, User, Grid, PlusSquare, BarChart2, LogOut, MessageCircle, HelpCircle } from 'lucide-react';
+import axios from "axios";
 
 const Dashboard = () => {
     const [selectedTab, setSelectedTab] = useState('menu');
-    const [selectedCategory, setSelectedCategory] = useState('Lunch');
+    const [selectedCategory, setSelectedCategory] = useState("noStock");
     const [cart, setCart] = useState([]);
   
     const categories = [
@@ -23,10 +24,63 @@ const Dashboard = () => {
           { name: 'Spicy Fried Chicken', price: 45.7 },
         ],
     };
+    const [formData, setFormData] = useState({
+    name: '',
+    category: '',
+    price: '',
+    stock: '',
+  });
 
     const handleAddToCart = (item) => {
       setCart([...cart, item]);
     };
+
+const [image, setImage] = useState(null);
+  const [selectedCategoryType, setSelectedCategoryType] = useState('');
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === 'category') {
+      // Determine type of category
+      if (['Beverages'].includes(value)) {
+        setSelectedCategoryType('longExpiry');
+      } else {
+        setSelectedCategoryType('dailyStock');
+      }
+    }
+  };
+
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!image) return alert('Image is required');
+
+    const data = new FormData();
+    data.append('name', formData.name);
+    data.append('category', formData.category);
+    data.append('price', formData.price);
+    data.append('stock', formData.stock);
+    data.append('image', image);
+
+    try {
+      const res = await axios.post('http://localhost:3000/api/products/add', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      alert('Product added successfully');
+      setFormData({ name: '', category: '', price: '', stock: ''});
+      setImage(null);
+    } catch (err) {
+      alert('Error adding product');
+      console.error(err);
+    }
+  };
   
     return (
         <div className="h-screen flex flex-col">
@@ -163,7 +217,100 @@ const Dashboard = () => {
     </div>
   )}
   {selectedTab === 'addProduct' && (
-              <div className="flex items-center justify-center h-full text-xl font-semibold">Welcome Admin</div>
+             <div className="flex flex-col items-center justify-center w-full min-h-screen p-4 bg-gray-100">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6">Add New Product</h2>
+
+      <form onSubmit={handleSubmit} className="w-full max-w-lg p-6 bg-white rounded-xl shadow space-y-5">
+        {/* Category Select */}
+        <div>
+          <label className="block font-medium mb-1 text-gray-700">Category</label>
+          <select
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            required
+            className="w-full p-2 border rounded"
+          >
+            <option value="">Select Category</option>
+            <option value="Breakfast">Breakfast</option>
+            <option value="Lunch">Lunch</option>
+            <option value="Dinner">Dinner</option>
+            <option value="Soup">Soup</option>
+            <option value="Desserts">Desserts</option>
+            <option value="Side Dish">Side Dish</option>
+            <option value="Appetizer">Appetizer</option>
+            <option value="Beverages">Beverages</option>
+          </select>
+        </div>
+
+        {/* Product Name */}
+        <div>
+          <label className="block font-medium mb-1 text-gray-700">Product Name</label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border rounded"
+            placeholder="Enter product name"
+          />
+        </div>
+
+        {/* Image Upload */}
+        <div>
+          <label className="block font-medium mb-1 text-gray-700">Product Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            required
+            className="w-full px-4 py-2 border rounded cursor-pointer"
+          />
+        </div>
+
+        {/* Price */}
+        <div>
+          <label className="block font-medium mb-1 text-gray-700">Price</label>
+          <input
+            type="number"
+            name="price"
+            value={formData.price}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 border rounded"
+            placeholder="Enter product price"
+          />
+        </div>
+
+        {/* Stock (with dynamic label) */}
+        <div>
+          <label className="block font-medium mb-1 text-gray-700">
+            {selectedCategoryType === 'dailyStock' ? 'Initial Stock (Daily Reset)' : 'Total Stock'}
+          </label>
+          <input
+            type="number"
+            name="stock"
+            value={formData.stock}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border rounded"
+            placeholder={
+              selectedCategoryType === 'dailyStock'
+                ? 'Enter initial stock for today'
+                : 'Enter total stock available'
+            }
+          />
+        </div>
+
+        {/* Submit */}
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition"
+        >
+          Add Product
+        </button>
+      </form>
+    </div>
             )}
   
             {selectedTab === 'analytics' && (
